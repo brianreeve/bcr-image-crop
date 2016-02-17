@@ -1,0 +1,116 @@
+<link rel="import" href="../polymer/polymer.html">
+<script src="../icropper/icropper.js"></script>
+<link rel="stylesheet" href="../icropper/icropper.css">
+
+<dom-module id="bcr-image-crop">
+    <template>
+        <style>
+            :host {  }
+
+            .icropper .archor { @apply(--anchor-styles); }
+
+            .icropper .archor-lt { @apply(--anchor-lt-styles); }
+            .icropper .archor-t  { @apply(--anchor-t-styles); }
+            .icropper .archor-rt { @apply(--anchor-rt-styles); }
+            .icropper .archor-r  { @apply(--anchor-r-styles); }
+            .icropper .archor-rb { @apply(--anchor-rb-styles); }
+            .icropper .archor-b  { @apply(--anchor-b-styles); }
+            .icropper .archor-lb { @apply(--anchor-lb-styles); }
+            .icropper .archor-l  { @apply(--anchor-l-styles); }
+
+        </style>
+        
+        <div id="container">
+            <div id="cropcontainer"></div>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "bcr-image-crop",
+            icr: null,
+            properties: {
+                src: {
+                    type: String
+                },
+                preview: {
+                    type: Object,
+                    observer: '_previewChanged'
+                },
+                ratio: {
+                    type: Number
+                },
+                l: {
+                    type: Number,
+                    readOnly: true
+                },
+                t: {
+                    type: Number,
+                    readOnly: true
+                },
+                w: {
+                    type: Number,
+                    readOnly: true
+                },
+                h: {
+                    type: Number,
+                    readOnly: true
+                }
+            },
+
+            _previewChanged: function() {
+                this.icr.bindPreview(this.preview);
+            },
+
+            attached: function() {
+                var bic = this;
+                this.icr = new ICropper(
+                    this.$.cropcontainer,
+                    {
+                        ratio: this.ratio,
+                        image: this.src,
+                        onChange: function(info) {  //onChange must be set when constructing.
+                            bic.fire('change');
+
+                            bic._setL(info.l);
+                            bic._setT(info.t);
+                            bic._setW(info.w);
+                            bic._setH(info.h);
+
+                            // console.debug(this);
+                        },
+                        preview: [
+                           //'previewSmall1'
+                        ]
+                    }
+                );
+            },
+
+            ready: function() {
+                // Update the subtree because icropper.js does not modify local DOM via Polymer DOM API
+                this.scopeSubtree(this.$.container, true);
+            },
+
+            crop: function(mime_type, quality) {
+                if(!mime_type || (mime_type !== 'image/jpeg' && mime_type !== 'image/png')) {
+                    mime_type = 'image/jpeg';
+                }
+                if(!quality || quality < 0 || quality > 1) {quality = 1;}
+
+                var tmp = { x: this.l, y: this.t, w: this.w , h: this.h };
+
+                canvas = document.createElement('canvas');
+                canvas.setAttribute('width', tmp.w);
+                canvas.setAttribute('height', tmp.h);
+                var ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = false;
+                //  TODO !
+
+                img = new Image();
+                img.src = this.src;
+
+                ctx.drawImage(img, tmp.x, tmp.y, tmp.w, tmp.h, 0, 0, tmp.w, tmp.h);
+                return canvas.toDataURL(mime_type, quality);
+            }
+        });
+    </script>
+</dom-module>

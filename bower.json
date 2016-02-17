@@ -1,0 +1,23 @@
+{
+  "name": "bcr-image-crop",
+  "version": "0.0.1",
+  "authors": [
+    "Brian Reeve <bcreeve@gmail.com>"
+  ],
+  "license": "",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "~1.1.3",
+    "icropper": "https://github.com/brianreeve/icropper.git"
+  },
+  "devDependencies": {
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  }
+}
