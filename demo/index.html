@@ -4,7 +4,7 @@
     <title>bcr-image-crop</title>
     <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
     <link rel="import" href="../../polymer/polymer.html">
-  
+
     <link rel="import" href="../bcr-image-crop.html">
 </head>
 
@@ -16,13 +16,13 @@
         border: 4px solid #333;
     };
 
-    --anchor-lt-styles: { border-right:0; border-bottom:0; };
+    --anchor-tl-styles: { border-right:0; border-bottom:0; };
     --anchor-t-styles: { border-right:0; border-bottom:0; border-left:0; };
-    --anchor-rt-styles: { border-bottom:0; border-left:0; };
+    --anchor-tr-styles: { border-bottom:0; border-left:0; };
     --anchor-r-styles: { border-top:0; border-bottom:0; border-left:0; };
-    --anchor-rb-styles: { border-top:0; border-left:0; };
+    --anchor-br-styles: { border-top:0; border-left:0; };
     --anchor-b-styles: { border-top:0; border-right:0; border-left:0; };
-    --anchor-lb-styles: { border-top:0; border-right:0; };
+    --anchor-bl-styles: { border-top:0; border-right:0; };
     --anchor-l-styles: { border-top:0; border-right:0; border-bottom:0; };
 }
 </style>
@@ -30,23 +30,34 @@
 <body>
 
 <h2>Default usage</h2>
-<bcr-image-crop id="bic1" src="../../icropper/demo.png"></bcr-image-crop>
+<bcr-image-crop id="bic1" src="../src/icropper/demo.png"></bcr-image-crop>
 
 <div id="info1"></div>
 <div id="preview1" style="margin: 40px;width: 100px;height: 100px;"></div>
 <img id="crop1" />
 
 <h2>Custom anchor styles</h2>
-<bcr-image-crop id="bic2" src="../../icropper/demo.png"></bcr-image-crop>
+<bcr-image-crop id="bic2" src="../src/icropper/demo.png"></bcr-image-crop>
+
+<h2>Custom size container</h2>
+<bcr-image-crop style="width:200px;" id="bic3" src="../src/icropper/demo.png"></bcr-image-crop>
+
+<div id="info3"></div>
+<div id="preview3" style="margin: 40px;width: 100px;height: 100px;"></div>
+<img id="crop3" />
 
 <script type="text/javascript">
     var bic1 = document.getElementById('bic1');
     var info1 = document.getElementById('info1');
     var preview1 = document.getElementById('preview1');
 
+    var bic3 = document.getElementById('bic3');
+    var info3 = document.getElementById('info3');
+    var preview3 = document.getElementById('preview3');
+
     window.addEventListener('WebComponentsReady', function(e) {
         bic1.addEventListener("change", function(){
-            console.debug('Change');
+            //console.debug('Change');
             //console.debug(this);
             if (this.l) {
                 info1.innerHTML = 'Left: ' + this.l + 'px, Top: '+this.t
@@ -54,6 +65,18 @@
             }
 
             bic1.preview = document.getElementById('preview1');
+            //crop.src = this.crop();
+        });
+
+        bic3.addEventListener("change", function(){
+            //console.debug('Change');
+            //console.debug(this);
+            if (this.l) {
+                info3.innerHTML = 'Left: ' + this.l + 'px, Top: '+this.t
+                        + 'px, Width: ' + this.w + 'px, Height: ' + this.h+'px';
+            }
+
+            bic3.preview = document.getElementById('preview3');
             //crop.src = this.crop();
         });
     });

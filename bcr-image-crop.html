@@ -1,26 +1,32 @@
 <link rel="import" href="../polymer/polymer.html">
-<script src="../icropper/icropper.js"></script>
-<link rel="stylesheet" href="../icropper/icropper.css">
+<!--script src="../icropper/icropper.js"></script-->
+<!--link rel="stylesheet" href="../icropper/icropper.css"-->
+<script src="src/icropper/icropper.js"></script>
+<link rel="stylesheet" href="src/icropper/icropper.css">
 
 <dom-module id="bcr-image-crop">
     <template>
         <style>
-            :host {  }
+            :host { display: inline-block; }
+
+            #cropcontainer {
+                /*display: inline-block;*/
+            }
 
             .icropper .archor { @apply(--anchor-styles); }
 
-            .icropper .archor-lt { @apply(--anchor-lt-styles); }
+            .icropper .archor-lt { @apply(--anchor-tl-styles); }
             .icropper .archor-t  { @apply(--anchor-t-styles); }
-            .icropper .archor-rt { @apply(--anchor-rt-styles); }
+            .icropper .archor-rt { @apply(--anchor-tr-styles); }
             .icropper .archor-r  { @apply(--anchor-r-styles); }
-            .icropper .archor-rb { @apply(--anchor-rb-styles); }
+            .icropper .archor-rb { @apply(--anchor-br-styles); }
             .icropper .archor-b  { @apply(--anchor-b-styles); }
-            .icropper .archor-lb { @apply(--anchor-lb-styles); }
+            .icropper .archor-lb { @apply(--anchor-bl-styles); }
             .icropper .archor-l  { @apply(--anchor-l-styles); }
 
         </style>
-        
-        <div id="container">
+
+        <div id="container" style$="{{style}}">
             <div id="cropcontainer"></div>
         </div>
     </template>
@@ -38,6 +44,11 @@
                 },
                 ratio: {
                     type: Number
+                },
+                cropRegion: {
+                    type: Object,
+                    readOnly: true,
+                    notify: true
                 },
                 l: {
                     type: Number,
@@ -57,8 +68,17 @@
                 }
             },
 
+            listeners: {
+                'cropcontainer.down': 'handleDown',
+                'cropcontainer.up': 'handleUp',
+                'cropcontainer.track': 'handleTrack'
+            },
+
             _previewChanged: function() {
-                this.icr.bindPreview(this.preview);
+                if (this.icr && this.preview) {
+                    this.icr.bindPreview(this.preview);
+                    this.icr.onChange(this.icr.getInfo()); // bindPreview is supposed to do this but icropper code is buggy when preview set
+                }
             },
 
             attached: function() {
@@ -76,18 +96,21 @@
                             bic._setW(info.w);
                             bic._setH(info.h);
 
-                            // console.debug(this);
+                            //console.debug(info);
                         },
-                        preview: [
-                           //'previewSmall1'
-                        ]
+                        preview: []
                     }
                 );
+                //this.icr.onChange(this.icr.getInfo());
+                //this.icr.setImage(this.src);
+                //console.debug(this.icr.getInfo());
+                this._previewChanged();
             },
 
             ready: function() {
                 // Update the subtree because icropper.js does not modify local DOM via Polymer DOM API
                 this.scopeSubtree(this.$.container, true);
+                //console.debug(this.icr.getInfo());
             },
 
             crop: function(mime_type, quality) {
@@ -98,7 +121,7 @@
 
                 var tmp = { x: this.l, y: this.t, w: this.w , h: this.h };
 
-                canvas = document.createElement('canvas');
+                var canvas = document.createElement('canvas');
                 canvas.setAttribute('width', tmp.w);
                 canvas.setAttribute('height', tmp.h);
                 var ctx = canvas.getContext('2d');
@@ -110,6 +133,28 @@
 
                 ctx.drawImage(img, tmp.x, tmp.y, tmp.w, tmp.h, 0, 0, tmp.w, tmp.h);
                 return canvas.toDataURL(mime_type, quality);
+            },
+
+            handleDown: function (e) {
+                //console.debug(e);
+                //this.icr._onMouseDown(e.detail.sourceEvent);
+                if (e.detail !== 0) {
+                    this.icr._onMouseDown(e);
+                }
+            },
+            handleUp: function (e) {
+                //console.debug(e);
+                //this.icr._onMouseUp(e.detail.sourceEvent);
+                if (e.detail !== 0) {
+                    this.icr._onMouseUp(e);
+                }
+            },
+            handleTrack: function (e) {
+                //console.debug(e);
+                //this.icr._onMouseMove(e.detail.sourceEvent);
+                if (e.detail !== 0) {
+                    this.icr._onMouseMove(e);
+                }
             }
         });
     </script>
