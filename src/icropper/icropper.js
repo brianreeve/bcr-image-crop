@@ -77,7 +77,8 @@
             delete options.keepSquare;
         }
         for(var p in options){
-            if(options[p])this[p] = options[p];
+            //if(options[p])
+            this[p] = options[p];
         }
         this.domNode = container || util.create('div');
         this._init();
@@ -191,8 +192,8 @@
             //  Get the cropping information. Such as being used by server side for real cropping.
 
             return {
-                w: Math.round((this.cropNode.offsetWidth - 2) * 1/this.scale)    //2 is hard code border width
-                ,h: Math.round((this.cropNode.offsetHeight - 2) * 1/this.scale)
+                w: Math.round((this.cropNode.offsetWidth /*- 2*/) * 1/this.scale)    //2 is hard code border width
+                ,h: Math.round((this.cropNode.offsetHeight /*- 2*/) * 1/this.scale)
                 ,l: Math.round((parseInt(util.style(this.cropNode, 'left'))) * 1/this.scale)
                 ,t: Math.round((parseInt(util.style(this.cropNode, 'top'))) * 1/this.scale)
                 ,cw: Math.round((this.domNode.offsetWidth) * 1/this.scale)  //container width
@@ -279,10 +280,10 @@
             var w2, h2;
             if (this.initialSize) {
                 var m = Math.min(w, h, this.initialSize);
-                w2 = h2 = m - 2 + 'px';
-            }else{
-                w2 = w - this.gap * 2 - 2;
-                h2 = h - this.gap * 2 - 2;
+                w2 = h2 = m /*- 2*/ + 'px';
+            } else {
+                w2 = w - this.gap * 2;// - 2;
+                h2 = h - this.gap * 2;// - 2;
                 if(this.ratio){
                     var _w2 = h2*this.ratio, _h2 = w2/this.ratio;
                     if(w2 > _w2)w2 = _w2;
@@ -371,8 +372,8 @@
                 this.startedPos = {
                     x: e.detail.x
                     , y: e.detail.y
-                    , h: n.offsetHeight - 2 //2 is border width
-                    , w: n.offsetWidth - 2
+                    , h: n.offsetHeight //- 2 //2 is border width
+                    , w: n.offsetWidth //- 2
                     , l: parseInt(util.style(n, 'left'))
                     , t: parseInt(util.style(n, 'top'))
                 }
@@ -518,7 +519,7 @@
                 if (p0.l + p0.w + dx <= this.domNode.offsetWidth) {
                     s.width = p0.w + dx + 'px';
                 } else {
-                    s.width = this.domNode.offsetWidth - p0.l - 2 + 'px';
+                    s.width = this.domNode.offsetWidth - p0.l /*- 2*/ + 'px';
                 }
             }
             if (/b/.test(m)) {
@@ -526,7 +527,7 @@
                 if (p0.t + p0.h + dy <= this.domNode.offsetHeight) {
                     s.height = p0.h + dy + 'px';
                 } else {
-                    s.height = this.domNode.offsetHeight - p0.t - 2 + 'px';
+                    s.height = this.domNode.offsetHeight - p0.t /*- 2*/ + 'px';
                 }
             }
 
