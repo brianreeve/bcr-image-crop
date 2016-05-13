@@ -107,25 +107,27 @@
                     this.icr.domNode.innerHTML = '';
                 }
 
-                this.icr = new ICropper(
-                        this.$.cropcontainer,
-                        {
-                            ratio: this.ratio,
-                            image: this.src,
-                            onChange: function(info) {  //onChange must be set when constructing.
-                                bic.fire('change');
+                if (this.src) {
+                    this.icr = new ICropper(
+                            this.$.cropcontainer,
+                            {
+                                ratio: this.ratio,
+                                image: this.src,
+                                onChange: function (info) {  //onChange must be set when constructing.
+                                    bic.fire('change');
 
-                                bic._setL(info.l);
-                                bic._setT(info.t);
-                                bic._setW(info.w);
-                                bic._setH(info.h);
+                                    bic._setL(info.l);
+                                    bic._setT(info.t);
+                                    bic._setW(info.w);
+                                    bic._setH(info.h);
 
-                                //console.debug(info);
-                            },
-                            gap: 0,
-                            preview: []
-                        }
-                );
+                                    //console.debug(info);
+                                },
+                                gap: 0,
+                                preview: []
+                            }
+                    );
+                }
                 //this.icr.onChange(this.icr.getInfo());
                 //this.icr.setImage(this.src);
                 //console.debug(this.icr.getInfo());
