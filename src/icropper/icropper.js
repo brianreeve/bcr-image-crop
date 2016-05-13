@@ -321,10 +321,10 @@
             var a = this._archors,
                 w = this.cropNode.offsetWidth,
                 h = this.cropNode.offsetHeight;
-            w = w / 2 - 4 + 'px';
-            h = h / 2 - 4 + 'px';
-            a.t.style.left = a.b.style.left = w;
-            a.l.style.top = a.r.style.top = h;
+            w = w / 2;
+            h = h / 2;
+            a.t.style.left = a.b.style.left = w - (a.l.offsetWidth / 2)  + 'px';
+            a.l.style.top = a.r.style.top = h - (a.l.offsetHeight / 2)  + 'px';
         }
 
         ,_posBlocks: function() {
