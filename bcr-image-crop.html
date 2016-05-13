@@ -36,7 +36,9 @@
             icr: null,
             properties: {
                 src: {
-                    type: String
+                    type: String,
+                    observer: '_srcChanged',
+                    value: null
                 },
                 preview: {
                     type: Object,
@@ -74,6 +76,10 @@
                 'cropcontainer.track': 'handleTrack'
             },
 
+            _srcChanged: function() {
+                this.initCropper();
+            },
+
             _previewChanged: function() {
                 if (this.icr && this.preview) {
                     this.icr.bindPreview(this.preview);
@@ -82,36 +88,49 @@
             },
 
             attached: function() {
-                var bic = this;
-                this.icr = new ICropper(
-                    this.$.cropcontainer,
-                    {
-                        ratio: this.ratio,
-                        image: this.src,
-                        onChange: function(info) {  //onChange must be set when constructing.
-                            bic.fire('change');
-
-                            bic._setL(info.l);
-                            bic._setT(info.t);
-                            bic._setW(info.w);
-                            bic._setH(info.h);
-
-                            //console.debug(info);
-                        },
-                        gap: 0,
-                        preview: []
-                    }
-                );
-                //this.icr.onChange(this.icr.getInfo());
-                //this.icr.setImage(this.src);
-                //console.debug(this.icr.getInfo());
-                this._previewChanged();
+                //if (this.src != null) {
+                this.initCropper();
+                //}
             },
 
             ready: function() {
                 // Update the subtree because icropper.js does not modify local DOM via Polymer DOM API
                 this.scopeSubtree(this.$.container, true);
                 //console.debug(this.icr.getInfo());
+            },
+
+            initCropper: function() {
+                var bic = this;
+
+                if (this.icr) {
+                    // destroy previous crop nodes
+                    this.icr.domNode.innerHTML = '';
+                }
+
+                this.icr = new ICropper(
+                        this.$.cropcontainer,
+                        {
+                            ratio: this.ratio,
+                            image: this.src,
+                            onChange: function(info) {  //onChange must be set when constructing.
+                                bic.fire('change');
+
+                                bic._setL(info.l);
+                                bic._setT(info.t);
+                                bic._setW(info.w);
+                                bic._setH(info.h);
+
+                                //console.debug(info);
+                            },
+                            gap: 0,
+                            preview: []
+                        }
+                );
+                //this.icr.onChange(this.icr.getInfo());
+                //this.icr.setImage(this.src);
+                //console.debug(this.icr.getInfo());
+
+                this._previewChanged();
             },
 
             crop: function(mime_type, quality) {
